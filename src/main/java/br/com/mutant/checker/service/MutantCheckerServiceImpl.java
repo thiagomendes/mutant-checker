@@ -82,7 +82,7 @@ public class MutantCheckerServiceImpl implements MutantCheckerService {
         return Arrays.asList(positionDto1, positionDto2, positionDto3, positionDto4, positionDto5, positionDto6);
     }
 
-    public char[][] convertDnaToMatrix(String[] dna) {
+    private char[][] convertDnaToMatrix(String[] dna) {
         return Arrays.stream(dna)
                 .map(String::toCharArray)
                 .toArray(char[][]::new);

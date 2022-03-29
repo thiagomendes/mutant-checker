@@ -6,9 +6,9 @@ public class Position {
 
     public static final int VERTICAL_DIRECTION = 1;
 
-    private int x;
+    private final int x;
 
-    private int y;
+    private final  int y;
 
     public Position(int x, int y) {
         this.x = x;

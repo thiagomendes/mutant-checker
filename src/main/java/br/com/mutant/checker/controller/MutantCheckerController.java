@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Controller
 public class MutantCheckerController {
 
-    private MutantCheckerService mutantCheckerService;
+    private final MutantCheckerService mutantCheckerService;
 
     @Autowired
     public MutantCheckerController(MutantCheckerService mutantCheckerService) {

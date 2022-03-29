@@ -8,6 +8,4 @@ public interface MutantCheckerService {
 
     void validateRequest(DnaCheckerRequestDto dnaCheckerRequestDto);
 
-    public char[][] convertDnaToMatrix(String[] dna);
-
 }
