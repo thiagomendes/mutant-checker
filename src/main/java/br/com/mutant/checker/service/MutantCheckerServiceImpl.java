@@ -18,11 +18,15 @@ public class MutantCheckerServiceImpl implements MutantCheckerService {
 
     private static final String INVALID_DNA_ERRO_MESSAGE = "Invalid DNA";
 
+    private static final String INVALID_INPUT_TABLE_MESSAGE = "Input table with invalid format";
+
     @Override
     public void validateRequest(DnaCheckerRequestDto dnaCheckerRequestDto) {
         Pattern pattern = Pattern.compile(VALIDATE_REQUEST_PATTERN);
         Arrays.asList(dnaCheckerRequestDto.getDna()).forEach(i -> {
-            if (!pattern.matcher(i).matches()) {
+            if (i.length() != dnaCheckerRequestDto.getDna().length) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, INVALID_INPUT_TABLE_MESSAGE);
+            } else if (!pattern.matcher(i).matches()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, INVALID_DNA_ERRO_MESSAGE);
             }
         });
