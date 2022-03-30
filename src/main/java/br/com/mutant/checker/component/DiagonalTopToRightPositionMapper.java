@@ -18,7 +18,7 @@ public class DiagonalTopToRightPositionMapper implements PositionMapper {
                     positions.add(new Position(p1, p1 + p0));
                 }
             }
-            if (positions.size() >= 4) {
+            if (positions.size() >= DETECTION_NUMBER) {
                 root.add(positions);
             }
         }
