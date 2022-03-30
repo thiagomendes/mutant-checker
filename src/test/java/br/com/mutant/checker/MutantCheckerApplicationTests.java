@@ -9,7 +9,7 @@ class MutantCheckerApplicationTests {
 
     @Test
     void contextLoads() {
-        Assertions.assertTrue(true);
+        Assertions.assertTrue(false);
     }
 
 }
