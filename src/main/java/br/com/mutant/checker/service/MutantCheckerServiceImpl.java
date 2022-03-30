@@ -3,6 +3,8 @@ package br.com.mutant.checker.service;
 import br.com.mutant.checker.component.PositionMapper;
 import br.com.mutant.checker.domain.vo.Position;
 import br.com.mutant.checker.dto.DnaCheckerRequestDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,8 @@ import java.util.regex.Pattern;
 
 @Service
 public class MutantCheckerServiceImpl implements MutantCheckerService {
+
+    private final Logger logger = LoggerFactory.getLogger(MutantCheckerServiceImpl.class);
 
     private static final String VALIDATE_REQUEST_PATTERN = "[ATCG]+";
 
@@ -32,8 +36,10 @@ public class MutantCheckerServiceImpl implements MutantCheckerService {
         Pattern pattern = Pattern.compile(VALIDATE_REQUEST_PATTERN);
         Arrays.asList(dnaCheckerRequestDto.getDna()).forEach(i -> {
             if (i.length() != dnaCheckerRequestDto.getDna().length) {
+                logger.info(INVALID_INPUT_TABLE_ERROR_MESSAGE + ", dna={}", Arrays.toString(dnaCheckerRequestDto.getDna()));
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, INVALID_INPUT_TABLE_ERROR_MESSAGE);
             } else if (!pattern.matcher(i).matches()) {
+                logger.info(INVALID_DNA_ERROR_MESSAGE + ", dna={}", Arrays.toString(dnaCheckerRequestDto.getDna()));
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, INVALID_DNA_ERROR_MESSAGE);
             }
         });
@@ -59,6 +65,7 @@ public class MutantCheckerServiceImpl implements MutantCheckerService {
                     counter = 1;
                 }
                 if (counter == DETECTION_NUMBER) {
+                    logger.info("Mutant detected by the character [{}] at position [{}] of the sequence [{}]", c, p, positions);
                     return true;
                 }
                 lastChar = c;

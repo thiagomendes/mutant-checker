@@ -18,4 +18,9 @@ public class Position {
     public int getColumn() {
         return column;
     }
+
+    @Override
+    public String toString() {
+        return "Position{line=" + line + ", column= " + column + "}";
+    }
 }
