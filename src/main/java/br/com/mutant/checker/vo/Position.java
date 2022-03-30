@@ -6,25 +6,24 @@ public class Position {
 
     public static final int VERTICAL_DIRECTION = 1;
 
-    private final int x;
+    public static final int DIAGONAL_DIRECTION_TOP_TO_RIGHT = 2;
 
-    private final  int y;
+    public static final int DIAGONAL_DIRECTION_TOP_TO_LEFT = 3;
 
-    public Position(int x, int y) {
-        this.x = x;
-        this.y = y;
+    private final int line;
+
+    private final int column;
+
+    public Position(int line, int column) {
+        this.line = line;
+        this.column = column;
     }
 
-    public int getX() {
-        return x;
+    public int getLine() {
+        return line;
     }
 
-    public int getY() {
-        return y;
-    }
-
-    @Override
-    public String toString() {
-        return "x=" + x + ", y=" + y;
+    public int getColumn() {
+        return column;
     }
 }

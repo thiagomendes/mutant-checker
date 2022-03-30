@@ -35,8 +35,11 @@ public class MutantCheckerServiceImpl implements MutantCheckerService {
     @Override
     public boolean isMutant(String[] dna) {
         char[][] matrix = convertDnaToMatrix(dna);
-        List<List<Position>> rootPositions = getPositions(matrix, Position.VERTICAL_DIRECTION);
-        rootPositions.addAll(getPositions(matrix, Position.HORIZONTAL_DIRECTION));
+        List<List<Position>> rootPositions = new ArrayList<>();
+        rootPositions.addAll(getDiagonalPositions(matrix, Position.DIAGONAL_DIRECTION_TOP_TO_LEFT));
+        rootPositions.addAll(getDiagonalPositions(matrix, Position.DIAGONAL_DIRECTION_TOP_TO_RIGHT));
+        rootPositions.addAll(getVerticalAndHorizontalPositions(matrix, Position.VERTICAL_DIRECTION));
+        rootPositions.addAll(getVerticalAndHorizontalPositions(matrix, Position.HORIZONTAL_DIRECTION));
         return checkPositions(rootPositions, matrix);
     }
 
@@ -45,7 +48,7 @@ public class MutantCheckerServiceImpl implements MutantCheckerService {
             int counter = 1;
             char lastChar = 0;
             for (Position p : positions) {
-                char c = matrix[p.getX()][p.getY()];
+                char c = matrix[p.getLine()][p.getColumn()];
                 if (c == lastChar) {
                     counter += 1;
                 } else {
@@ -60,30 +63,55 @@ public class MutantCheckerServiceImpl implements MutantCheckerService {
         return false;
     }
 
-    private List<List<Position>> getPositions(char[][] matrix, int direction) {
+    private List<List<Position>> getVerticalAndHorizontalPositions(char[][] matrix, int direction) {
         List<List<Position>> root = new ArrayList<>();
-        for (int i = 0; i < matrix.length; i++) {
+        for (int line = 0; line < matrix.length; line++) {
             List<Position> positions = new ArrayList<>();
-            for (int p = 0; p < matrix.length; p++) {
+            for (int column = 0; column < matrix.length; column++) {
                 if (direction == Position.HORIZONTAL_DIRECTION) {
-                    positions.add(new Position(i, p));
-                } else {
-                    positions.add(new Position(p, i));
+                    positions.add(new Position(line, column));
+                } else if (direction == Position.VERTICAL_DIRECTION) {
+                    positions.add(new Position(column, line));
                 }
             }
-            root.add(positions);
+            if (positions.size() >= 4) {
+                root.add(positions);
+            }
         }
         return root;
     }
 
-    public List<Position> addMockPosition() {
-        Position positionDto1 = new Position(0, 4);
-        Position positionDto2 = new Position(1, 4);
-        Position positionDto3 = new Position(2, 4);
-        Position positionDto4 = new Position(3, 4);
-        Position positionDto5 = new Position(4, 4);
-        Position positionDto6 = new Position(5, 4);
-        return Arrays.asList(positionDto1, positionDto2, positionDto3, positionDto4, positionDto5, positionDto6);
+    private List<List<Position>> getDiagonalPositions(char[][] matrix, int direction) {
+
+        List<List<Position>> root = new ArrayList<>();
+
+        if (direction == Position.DIAGONAL_DIRECTION_TOP_TO_RIGHT) {
+            for (int line = 0; line < matrix.length; line++) {
+                List<Position> positions = new ArrayList<>();
+                for (int column = 0; column < matrix.length; column++) {
+                    if (column + line < matrix.length) {
+                        positions.add(new Position(column, column + line));
+                    }
+                }
+                if (positions.size() >= 4) {
+                    root.add(positions);
+                }
+            }
+        } else if (direction == Position.DIAGONAL_DIRECTION_TOP_TO_LEFT) {
+            for (int line = matrix.length - 1; line > 0; line--) {
+                List<Position> positions = new ArrayList<>();
+                for (int column = 0; column < matrix.length; column++) {
+                    if (line - column >= 0) {
+                        positions.add(new Position(column, line - column));
+                    }
+                }
+                if (positions.size() >= 4) {
+                    root.add(positions);
+                }
+            }
+        }
+
+        return root;
     }
 
     private char[][] convertDnaToMatrix(String[] dna) {
