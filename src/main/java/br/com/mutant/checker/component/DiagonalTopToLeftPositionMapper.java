@@ -9,7 +9,7 @@ import java.util.List;
 @Component
 public class DiagonalTopToLeftPositionMapper implements PositionMapper {
     @Override
-    public List<List<Position>> getPositions(char[][] matrix) {
+    public List<List<Position>> getPositions(char[][] matrix, int detectionNumber) {
         List<List<Position>> root = new ArrayList<>();
         for (int p0 = matrix.length - 1; p0 > 0; p0--) {
             List<Position> positions = new ArrayList<>();
@@ -19,7 +19,7 @@ public class DiagonalTopToLeftPositionMapper implements PositionMapper {
                     positions.add(new Position(p1, n));
                 }
             }
-            if (positions.size() >= DETECTION_NUMBER) {
+            if (positions.size() >= detectionNumber) {
                 root.add(positions);
             }
         }

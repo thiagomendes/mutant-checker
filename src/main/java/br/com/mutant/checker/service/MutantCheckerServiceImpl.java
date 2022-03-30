@@ -1,8 +1,8 @@
 package br.com.mutant.checker.service;
 
 import br.com.mutant.checker.component.PositionMapper;
-import br.com.mutant.checker.dto.DnaCheckerRequestDto;
 import br.com.mutant.checker.domain.vo.Position;
+import br.com.mutant.checker.dto.DnaCheckerRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,6 +21,8 @@ public class MutantCheckerServiceImpl implements MutantCheckerService {
     private static final String INVALID_DNA_ERROR_MESSAGE = "Invalid DNA";
 
     private static final String INVALID_INPUT_TABLE_ERROR_MESSAGE = "Input table with invalid format";
+
+    private static final int DETECTION_NUMBER = 4;
 
     @Autowired
     private List<PositionMapper> positionMappers;
@@ -41,7 +43,7 @@ public class MutantCheckerServiceImpl implements MutantCheckerService {
     public boolean isMutant(String[] dna) {
         char[][] matrix = convertDnaToMatrix(dna);
         List<List<Position>> rootPositions = new ArrayList<>();
-        positionMappers.forEach(i -> rootPositions.addAll(i.getPositions(matrix)));
+        positionMappers.forEach(i -> rootPositions.addAll(i.getPositions(matrix, DETECTION_NUMBER)));
         return checkPositions(rootPositions, matrix);
     }
 
@@ -56,7 +58,7 @@ public class MutantCheckerServiceImpl implements MutantCheckerService {
                 } else {
                     counter = 1;
                 }
-                if (counter == 4) {
+                if (counter == DETECTION_NUMBER) {
                     return true;
                 }
                 lastChar = c;
