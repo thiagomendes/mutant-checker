@@ -1,7 +1,9 @@
 package br.com.mutant.checker.service;
 
+import br.com.mutant.checker.component.PositionMapper;
 import br.com.mutant.checker.dto.DnaCheckerRequestDto;
-import br.com.mutant.checker.vo.Position;
+import br.com.mutant.checker.domain.vo.Position;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,6 +22,9 @@ public class MutantCheckerServiceImpl implements MutantCheckerService {
 
     private static final String INVALID_INPUT_TABLE_MESSAGE = "Input table with invalid format";
 
+    @Autowired
+    private List<PositionMapper> positionMappers;
+
     @Override
     public void validateRequest(DnaCheckerRequestDto dnaCheckerRequestDto) {
         Pattern pattern = Pattern.compile(VALIDATE_REQUEST_PATTERN);
@@ -36,10 +41,7 @@ public class MutantCheckerServiceImpl implements MutantCheckerService {
     public boolean isMutant(String[] dna) {
         char[][] matrix = convertDnaToMatrix(dna);
         List<List<Position>> rootPositions = new ArrayList<>();
-        rootPositions.addAll(getDiagonalPositions(matrix, Position.DIAGONAL_DIRECTION_TOP_TO_LEFT));
-        rootPositions.addAll(getDiagonalPositions(matrix, Position.DIAGONAL_DIRECTION_TOP_TO_RIGHT));
-        rootPositions.addAll(getVerticalAndHorizontalPositions(matrix, Position.VERTICAL_DIRECTION));
-        rootPositions.addAll(getVerticalAndHorizontalPositions(matrix, Position.HORIZONTAL_DIRECTION));
+        positionMappers.forEach(i -> rootPositions.addAll(i.getPositions(matrix)));
         return checkPositions(rootPositions, matrix);
     }
 
@@ -61,57 +63,6 @@ public class MutantCheckerServiceImpl implements MutantCheckerService {
             }
         }
         return false;
-    }
-
-    private List<List<Position>> getVerticalAndHorizontalPositions(char[][] matrix, int direction) {
-        List<List<Position>> root = new ArrayList<>();
-        for (int line = 0; line < matrix.length; line++) {
-            List<Position> positions = new ArrayList<>();
-            for (int column = 0; column < matrix.length; column++) {
-                if (direction == Position.HORIZONTAL_DIRECTION) {
-                    positions.add(new Position(line, column));
-                } else if (direction == Position.VERTICAL_DIRECTION) {
-                    positions.add(new Position(column, line));
-                }
-            }
-            if (positions.size() >= 4) {
-                root.add(positions);
-            }
-        }
-        return root;
-    }
-
-    private List<List<Position>> getDiagonalPositions(char[][] matrix, int direction) {
-
-        List<List<Position>> root = new ArrayList<>();
-
-        if (direction == Position.DIAGONAL_DIRECTION_TOP_TO_RIGHT) {
-            for (int line = 0; line < matrix.length; line++) {
-                List<Position> positions = new ArrayList<>();
-                for (int column = 0; column < matrix.length; column++) {
-                    if (column + line < matrix.length) {
-                        positions.add(new Position(column, column + line));
-                    }
-                }
-                if (positions.size() >= 4) {
-                    root.add(positions);
-                }
-            }
-        } else if (direction == Position.DIAGONAL_DIRECTION_TOP_TO_LEFT) {
-            for (int line = matrix.length - 1; line > 0; line--) {
-                List<Position> positions = new ArrayList<>();
-                for (int column = 0; column < matrix.length; column++) {
-                    if (line - column >= 0) {
-                        positions.add(new Position(column, line - column));
-                    }
-                }
-                if (positions.size() >= 4) {
-                    root.add(positions);
-                }
-            }
-        }
-
-        return root;
     }
 
     private char[][] convertDnaToMatrix(String[] dna) {

@@ -1,14 +1,6 @@
-package br.com.mutant.checker.vo;
+package br.com.mutant.checker.domain.vo;
 
 public class Position {
-
-    public static final int HORIZONTAL_DIRECTION = 0;
-
-    public static final int VERTICAL_DIRECTION = 1;
-
-    public static final int DIAGONAL_DIRECTION_TOP_TO_RIGHT = 2;
-
-    public static final int DIAGONAL_DIRECTION_TOP_TO_LEFT = 3;
 
     private final int line;
 
