@@ -18,9 +18,9 @@ public class MutantCheckerServiceImpl implements MutantCheckerService {
 
     private static final String VALIDATE_REQUEST_PATTERN = "[ATCG]+";
 
-    private static final String INVALID_DNA_ERRO_MESSAGE = "Invalid DNA";
+    private static final String INVALID_DNA_ERROR_MESSAGE = "Invalid DNA";
 
-    private static final String INVALID_INPUT_TABLE_MESSAGE = "Input table with invalid format";
+    private static final String INVALID_INPUT_TABLE_ERROR_MESSAGE = "Input table with invalid format";
 
     @Autowired
     private List<PositionMapper> positionMappers;
@@ -30,9 +30,9 @@ public class MutantCheckerServiceImpl implements MutantCheckerService {
         Pattern pattern = Pattern.compile(VALIDATE_REQUEST_PATTERN);
         Arrays.asList(dnaCheckerRequestDto.getDna()).forEach(i -> {
             if (i.length() != dnaCheckerRequestDto.getDna().length) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, INVALID_INPUT_TABLE_MESSAGE);
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, INVALID_INPUT_TABLE_ERROR_MESSAGE);
             } else if (!pattern.matcher(i).matches()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, INVALID_DNA_ERRO_MESSAGE);
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, INVALID_DNA_ERROR_MESSAGE);
             }
         });
     }

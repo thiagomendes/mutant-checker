@@ -14,8 +14,9 @@ public class DiagonalTopToLeftPositionMapper implements PositionMapper {
         for (int p0 = matrix.length - 1; p0 > 0; p0--) {
             List<Position> positions = new ArrayList<>();
             for (int p1 = 0; p1 < matrix.length; p1++) {
-                if (p0 - p1 >= 0) {
-                    positions.add(new Position(p1, p0 - p1));
+                int n = p0 - p1;
+                if (n >= 0) {
+                    positions.add(new Position(p1, n));
                 }
             }
             if (positions.size() >= DETECTION_NUMBER) {
