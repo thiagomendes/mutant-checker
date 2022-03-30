@@ -1,5 +1,8 @@
 package br.com.mutant.checker.service;
 
+import br.com.mutant.checker.component.DiagonalBottomToRightPositionMapper;
+import br.com.mutant.checker.component.DiagonalTopToLeftPositionMapper;
+import br.com.mutant.checker.component.DiagonalTopToRightPositionMapper;
 import br.com.mutant.checker.component.PositionMapper;
 import br.com.mutant.checker.domain.vo.Position;
 import br.com.mutant.checker.dto.DnaCheckerRequestDto;
@@ -43,7 +46,8 @@ public class MutantCheckerServiceImpl implements MutantCheckerService {
     public boolean isMutant(String[] dna) {
         char[][] matrix = convertDnaToMatrix(dna);
         List<List<Position>> rootPositions = new ArrayList<>();
-        positionMappers.forEach(i -> rootPositions.addAll(i.getPositions(matrix, DETECTION_NUMBER)));
+        //positionMappers.forEach(i -> rootPositions.addAll(i.getPositions(matrix, DETECTION_NUMBER)));
+        rootPositions.addAll(new DiagonalBottomToRightPositionMapper().getPositions(matrix, DETECTION_NUMBER));
         return checkPositions(rootPositions, matrix);
     }
 
