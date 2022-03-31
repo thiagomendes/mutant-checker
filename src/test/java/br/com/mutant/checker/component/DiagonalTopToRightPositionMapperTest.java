@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class DiagonalTopToRightPositionMapperTest {
 
     private DiagonalTopToRightPositionMapper positionMapper;
@@ -22,11 +24,11 @@ class DiagonalTopToRightPositionMapperTest {
         char[][] humanDnaMatrix = MutantCheckerTestHelper.getHumanDnaMatrixWithSixPositionsCharArray();
         List<List<Position>> positions = positionMapper.getPositions(humanDnaMatrix, 4);
 
-        Assertions.assertEquals(3, positions.size());
+        assertEquals(3, positions.size());
 
-        Assertions.assertEquals(0, positions.get(0).get(0).getLine());
-        Assertions.assertEquals(0, positions.get(0).get(0).getColumn());
-        Assertions.assertEquals(3, positions.get(2).get(3).getLine());
-        Assertions.assertEquals(5, positions.get(2).get(3).getColumn());
+        assertEquals(0, positions.get(0).get(0).getLine());
+        assertEquals(0, positions.get(0).get(0).getColumn());
+        assertEquals(3, positions.get(2).get(3).getLine());
+        assertEquals(5, positions.get(2).get(3).getColumn());
     }
 }

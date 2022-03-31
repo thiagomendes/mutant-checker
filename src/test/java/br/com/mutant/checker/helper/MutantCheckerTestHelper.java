@@ -24,6 +24,34 @@ public class MutantCheckerTestHelper {
         };
     }
 
+    public static String[] getHumanDnaMatrixWithTableLargerThanUsual() {
+        return new String[]{
+                "TTGCTATGA",
+                "CAGTGCGTA",
+                "TTATGAAAT",
+                "AGAAAGATG",
+                "CCCATTGGT",
+                "TCGCTGTTA",
+                "TGACGGTGA",
+                "GCACTGATA",
+                "TCATTATTG"
+        };
+    }
+
+    public static String[] getMutantDnaMatrixWithTableLargerThanUsual() {
+        return new String[]{
+                "TTGCTATGA",
+                "CAGTGCGTA",
+                "TTATGAAAT",
+                "AGAAAGATG",
+                "CCCATTGGT",
+                "TCGCTGTTA",
+                "TGACGGTGA",
+                "GCAGTGATA",
+                "TCATTATTG"
+        };
+    }
+
     public static String[] getMutantDnaMatrixInHorizontalPosition() {
         return new String[]{
                 "TTGCTA",
