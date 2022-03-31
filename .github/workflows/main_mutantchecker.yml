@@ -21,14 +21,17 @@ jobs:
         with:
           java-version: '11'
 
-      - name: Build with Maven
-        run: mvn clean install
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2    
+
+      - name: Build with Gradle
+        run: gradle clean build bootJar
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.jar'
+          path: '${{ github.workspace }}/build/lib/*.jar'
 
   deploy:
     runs-on: windows-latest
