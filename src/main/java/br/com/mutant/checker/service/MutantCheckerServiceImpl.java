@@ -1,8 +1,11 @@
 package br.com.mutant.checker.service;
 
 import br.com.mutant.checker.component.PositionMapper;
+import br.com.mutant.checker.domain.entity.CheckResult;
+import br.com.mutant.checker.domain.entity.Kind;
 import br.com.mutant.checker.domain.vo.Position;
 import br.com.mutant.checker.dto.DnaCheckerRequestDto;
+import br.com.mutant.checker.repository.CheckResultRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,8 +32,15 @@ public class MutantCheckerServiceImpl implements MutantCheckerService {
 
     private static final int DETECTION_NUMBER = 4;
 
+    private final CheckResultRepository checkResultRepository;
+
+    private final List<PositionMapper> positionMappers;
+
     @Autowired
-    private List<PositionMapper> positionMappers;
+    public MutantCheckerServiceImpl(CheckResultRepository checkResultRepository, List<PositionMapper> positionMappers) {
+        this.checkResultRepository = checkResultRepository;
+        this.positionMappers = positionMappers;
+    }
 
     @Override
     public void validateRequest(DnaCheckerRequestDto dnaCheckerRequestDto) {
@@ -50,7 +61,17 @@ public class MutantCheckerServiceImpl implements MutantCheckerService {
         char[][] matrix = convertDnaToMatrix(dna);
         List<List<Position>> rootPositions = new ArrayList<>();
         positionMappers.forEach(i -> rootPositions.addAll(i.getPositions(matrix, DETECTION_NUMBER)));
-        return checkPositions(rootPositions, matrix);
+        boolean result = checkPositions(rootPositions, matrix);
+        saveResult(result, dna);
+        return result;
+    }
+
+    private void saveResult(boolean result, String[] dna) {
+        CheckResult checkResult = new CheckResult();
+        checkResult.setDna(Arrays.toString(dna));
+        checkResult.setCreateOn(LocalDateTime.now());
+        checkResult.setKind(result ? Kind.MUTANT : Kind.HUMAN);
+        checkResultRepository.save(checkResult);
     }
 
     private boolean checkPositions(List<List<Position>> rootPositions, char[][] matrix) {
