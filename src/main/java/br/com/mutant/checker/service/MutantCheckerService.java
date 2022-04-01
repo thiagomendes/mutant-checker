@@ -7,4 +7,6 @@ public interface MutantCheckerService {
     boolean isMutant(String[] dna);
 
     void validateRequest(DnaCheckerRequestDto dnaCheckerRequestDto);
+
+    void saveResult(boolean result, String[] dna);
 }

@@ -9,6 +9,7 @@ import br.com.mutant.checker.repository.CheckResultRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -57,16 +58,16 @@ public class MutantCheckerServiceImpl implements MutantCheckerService {
     }
 
     @Override
+    @Cacheable("checkResultCacheName")
     public boolean isMutant(String[] dna) {
         char[][] matrix = convertDnaToMatrix(dna);
         List<List<Position>> rootPositions = new ArrayList<>();
         positionMappers.forEach(i -> rootPositions.addAll(i.getPositions(matrix, DETECTION_NUMBER)));
-        boolean result = checkPositions(rootPositions, matrix);
-        saveResult(result, dna);
-        return result;
+        return checkPositions(rootPositions, matrix);
     }
 
-    private void saveResult(boolean result, String[] dna) {
+    @Override
+    public void saveResult(boolean result, String[] dna) {
         CheckResult checkResult = new CheckResult();
         checkResult.setDna(Arrays.toString(dna));
         checkResult.setCreateOn(LocalDateTime.now());
