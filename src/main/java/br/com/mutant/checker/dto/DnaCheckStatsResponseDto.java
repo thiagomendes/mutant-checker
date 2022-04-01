@@ -10,7 +10,7 @@ public class DnaCheckStatsResponseDto {
     @JsonProperty("count_human_dna")
     private long countHumanDna;
 
-    private double ratio;
+    private float ratio;
 
     public long getCountMutantDna() {
         return countMutantDna;
@@ -28,11 +28,11 @@ public class DnaCheckStatsResponseDto {
         this.countHumanDna = countHumanDna;
     }
 
-    public double getRatio() {
+    public float getRatio() {
         return ratio;
     }
 
-    public void setRatio(double ratio) {
+    public void setRatio(float ratio) {
         this.ratio = ratio;
     }
 }

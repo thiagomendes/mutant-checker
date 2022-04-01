@@ -35,7 +35,7 @@ public class MutantStatsServiceImpl implements MutantStatsService {
         if (dnaCheckStatsResponseDto.getCountMutantDna() == 0 || dnaCheckStatsResponseDto.getCountHumanDna() == 0) {
             dnaCheckStatsResponseDto.setRatio(0);
         } else {
-            double ratio = (double) dnaCheckStatsResponseDto.getCountMutantDna() / (double) dnaCheckStatsResponseDto.getCountHumanDna();
+            float ratio = (float) dnaCheckStatsResponseDto.getCountMutantDna() / (float) dnaCheckStatsResponseDto.getCountHumanDna();
             dnaCheckStatsResponseDto.setRatio(ratio);
         }
 
