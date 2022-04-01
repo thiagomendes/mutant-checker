@@ -1,5 +1,6 @@
 package br.com.mutant.checker.service;
 
+import br.com.mutant.checker.dto.DnaCheckStatsResponseDto;
 import br.com.mutant.checker.dto.DnaCheckerRequestDto;
 
 public interface MutantCheckerService {
@@ -7,5 +8,7 @@ public interface MutantCheckerService {
     boolean isMutant(String[] dna);
 
     void validateRequest(DnaCheckerRequestDto dnaCheckerRequestDto);
+
+    DnaCheckStatsResponseDto getStats();
 
 }

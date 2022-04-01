@@ -4,6 +4,7 @@ import br.com.mutant.checker.component.PositionMapper;
 import br.com.mutant.checker.domain.entity.CheckResult;
 import br.com.mutant.checker.domain.entity.Kind;
 import br.com.mutant.checker.domain.vo.Position;
+import br.com.mutant.checker.dto.DnaCheckStatsResponseDto;
 import br.com.mutant.checker.dto.DnaCheckerRequestDto;
 import br.com.mutant.checker.repository.CheckResultRepository;
 import org.slf4j.Logger;
@@ -17,7 +18,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class MutantCheckerServiceImpl implements MutantCheckerService {
@@ -54,6 +58,27 @@ public class MutantCheckerServiceImpl implements MutantCheckerService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, INVALID_DNA_ERROR_MESSAGE);
             }
         });
+    }
+
+    @Override
+    public DnaCheckStatsResponseDto getStats() {
+        Map<Kind, Long> collect = checkResultRepository
+                .findAll()
+                .stream()
+                .map(CheckResult::getKind)
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+        DnaCheckStatsResponseDto dnaCheckStatsResponseDto = new DnaCheckStatsResponseDto();
+        dnaCheckStatsResponseDto.setCountHumanDna(collect.containsKey(Kind.HUMAN) ? collect.get(Kind.HUMAN) : 0);
+        dnaCheckStatsResponseDto.setCountMutantDna(collect.containsKey(Kind.MUTANT) ? collect.get(Kind.MUTANT) : 0);
+
+        if (dnaCheckStatsResponseDto.getCountMutantDna() == 0 || dnaCheckStatsResponseDto.getCountHumanDna() == 0) {
+            dnaCheckStatsResponseDto.setRatio(0);
+        } else {
+            double ratio = (double) dnaCheckStatsResponseDto.getCountMutantDna() / (double) dnaCheckStatsResponseDto.getCountHumanDna();
+            dnaCheckStatsResponseDto.setRatio(ratio);
+        }
+
+        return dnaCheckStatsResponseDto;
     }
 
     @Override
