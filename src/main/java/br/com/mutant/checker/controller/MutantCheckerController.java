@@ -5,6 +5,8 @@ import br.com.mutant.checker.service.MutantCheckerService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +14,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Arrays;
+
 @Controller
 public class MutantCheckerController {
+
+    private final Logger logger = LoggerFactory.getLogger(MutantCheckerController.class);
 
     private final MutantCheckerService mutantCheckerService;
 
@@ -34,10 +40,14 @@ public class MutantCheckerController {
         boolean result = mutantCheckerService.isMutant(dnaCheckerRequestDto.getDna());
         mutantCheckerService.saveResult(result, dnaCheckerRequestDto.getDna());
 
+        String stringDna = Arrays.toString(dnaCheckerRequestDto.getDna());
+
         if (result) {
+            logger.info("Mutant detected for stringDna {}", stringDna);
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
+        logger.info("Human detected for stringDna {}", stringDna);
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 }
