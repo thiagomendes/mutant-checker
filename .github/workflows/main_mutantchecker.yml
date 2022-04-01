@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Test, build and deploy JAR app to Azure Web App
+name: Build and deploy JAR app to Azure Web App - mutantchecker
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -21,25 +21,22 @@ jobs:
         with:
           java-version: '11'
 
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2    
-
-      - name: Build with Gradle
-        run: gradle clean test bootJar
+      - name: Build with Maven
+        run: mvn clean install
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: java-app
-          path: '${{ github.workspace }}\build\libs\*.jar'
+          path: '${{ github.workspace }}/target/*.jar'
 
   deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs: build
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
+    
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
@@ -52,5 +49,5 @@ jobs:
         with:
           app-name: 'mutantchecker'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_6644ED86E54747D580727F9617ECE9C0 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F251CB63413A4E4883AFDE2AE195AFB3 }}
           package: '*.jar'
