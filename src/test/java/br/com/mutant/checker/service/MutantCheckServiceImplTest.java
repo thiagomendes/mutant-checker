@@ -1,6 +1,11 @@
 package br.com.mutant.checker.service;
 
+import br.com.mutant.checker.component.DiagonalBottomToLeftPositionMapper;
+import br.com.mutant.checker.component.DiagonalBottomToRightPositionMapper;
+import br.com.mutant.checker.component.DiagonalTopToRightPositionMapper;
+import br.com.mutant.checker.component.HorizontalPositionMapper;
 import br.com.mutant.checker.component.PositionMapper;
+import br.com.mutant.checker.component.VerticalPositionMapper;
 import br.com.mutant.checker.dto.DnaCheckerRequestDto;
 import br.com.mutant.checker.helper.MutantCheckerTestHelper;
 import br.com.mutant.checker.repository.CheckResultRepository;
@@ -12,11 +17,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,7 +28,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 class MutantCheckServiceImplTest {
 
@@ -34,12 +37,19 @@ class MutantCheckServiceImplTest {
     @Mock
     private CheckResultRepository checkResultRepository;
 
-    @Autowired
-    private List<PositionMapper> positionMappers;
-
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
+
+        List<PositionMapper> positionMappers = Arrays.asList(
+                new VerticalPositionMapper(),
+                new HorizontalPositionMapper(),
+                new DiagonalBottomToLeftPositionMapper(),
+                new DiagonalBottomToRightPositionMapper(),
+                new DiagonalBottomToLeftPositionMapper(),
+                new DiagonalTopToRightPositionMapper()
+        );
+
         mutantCheckService = new MutantCheckServiceImpl(checkResultRepository, positionMappers);
     }
 
