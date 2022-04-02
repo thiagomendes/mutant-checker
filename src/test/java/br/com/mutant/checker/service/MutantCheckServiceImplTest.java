@@ -20,13 +20,16 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
-class MutantCheckerServiceImplTest {
+class MutantCheckServiceImplTest {
 
     @InjectMocks
-    private MutantCheckerServiceImpl mutantCheckerService;
+    private MutantCheckServiceImpl mutantCheckService;
 
     @Mock
     private CheckResultRepository checkResultRepository;
@@ -37,69 +40,69 @@ class MutantCheckerServiceImplTest {
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-        mutantCheckerService = new MutantCheckerServiceImpl(checkResultRepository, positionMappers);
+        mutantCheckService = new MutantCheckServiceImpl(checkResultRepository, positionMappers);
     }
 
     @Test
     void testHumanDna() {
         String[] dna = MutantCheckerTestHelper.getHumanDnaMatrixWithSixPositionsStringArray();
-        boolean isMutant = mutantCheckerService.isMutant(dna);
+        boolean isMutant = mutantCheckService.isMutant(dna);
         assertFalse(isMutant);
     }
 
     @Test
     void testHumanDnaWithTableLargerThanUsual() {
         String[] dna = MutantCheckerTestHelper.getHumanDnaMatrixWithTableLargerThanUsual();
-        boolean isMutant = mutantCheckerService.isMutant(dna);
+        boolean isMutant = mutantCheckService.isMutant(dna);
         assertFalse(isMutant);
     }
 
     @Test
     void testMutantDnaWithTableLargerThanUsual() {
         String[] dna = MutantCheckerTestHelper.getMutantDnaMatrixWithTableLargerThanUsual();
-        boolean isMutant = mutantCheckerService.isMutant(dna);
+        boolean isMutant = mutantCheckService.isMutant(dna);
         assertTrue(isMutant);
     }
 
     @Test
     void testMutantDnaInHorizontalPosition() {
         String[] dna = MutantCheckerTestHelper.getMutantDnaMatrixInHorizontalPosition();
-        boolean isMutant = mutantCheckerService.isMutant(dna);
+        boolean isMutant = mutantCheckService.isMutant(dna);
         assertTrue(isMutant);
     }
 
     @Test
     void testMutantDnaInVerticalPosition() {
         String[] dna = MutantCheckerTestHelper.getMutantDnaMatrixInVerticalPosition();
-        boolean isMutant = mutantCheckerService.isMutant(dna);
+        boolean isMutant = mutantCheckService.isMutant(dna);
         assertTrue(isMutant);
     }
 
     @Test
     void testMutantDnaInTopToRightPosition() {
         String[] dna = MutantCheckerTestHelper.getMutantDnaMatrixInTopToRightPosition();
-        boolean isMutant = mutantCheckerService.isMutant(dna);
+        boolean isMutant = mutantCheckService.isMutant(dna);
         assertTrue(isMutant);
     }
 
     @Test
     void testMutantDnaInTopToLeftPosition() {
         String[] dna = MutantCheckerTestHelper.getMutantDnaMatrixInTopToLeftPosition();
-        boolean isMutant = mutantCheckerService.isMutant(dna);
+        boolean isMutant = mutantCheckService.isMutant(dna);
         assertTrue(isMutant);
     }
 
     @Test
     void testMutantDnaInBottomToLeftPosition() {
         String[] dna = MutantCheckerTestHelper.getMutantDnaMatrixInBottomToLeftPosition();
-        boolean isMutant = mutantCheckerService.isMutant(dna);
+        boolean isMutant = mutantCheckService.isMutant(dna);
         assertTrue(isMutant);
     }
 
     @Test
     void testMutantDnaInBottomToRightPosition() {
         String[] dna = MutantCheckerTestHelper.getMutantDnaMatrixInBottomToRightPosition();
-        boolean isMutant = mutantCheckerService.isMutant(dna);
+        boolean isMutant = mutantCheckService.isMutant(dna);
         assertTrue(isMutant);
     }
 
@@ -108,7 +111,7 @@ class MutantCheckerServiceImplTest {
         String[] dna = MutantCheckerTestHelper.getInvalidTable();
         DnaCheckerRequestDto dnaCheckerRequestDto = new DnaCheckerRequestDto();
         dnaCheckerRequestDto.setDna(dna);
-        ResponseStatusException responseStatusException = Assertions.assertThrows(ResponseStatusException.class, () -> mutantCheckerService.validateRequest(dnaCheckerRequestDto));
+        ResponseStatusException responseStatusException = Assertions.assertThrows(ResponseStatusException.class, () -> mutantCheckService.validateRequest(dnaCheckerRequestDto));
         assertEquals("Input table with invalid format", responseStatusException.getReason());
         assertEquals(HttpStatus.BAD_REQUEST, responseStatusException.getStatus());
     }
@@ -118,8 +121,14 @@ class MutantCheckerServiceImplTest {
         String[] dna = MutantCheckerTestHelper.getDnaWithInvalidChar();
         DnaCheckerRequestDto dnaCheckerRequestDto = new DnaCheckerRequestDto();
         dnaCheckerRequestDto.setDna(dna);
-        ResponseStatusException responseStatusException = Assertions.assertThrows(ResponseStatusException.class, () -> mutantCheckerService.validateRequest(dnaCheckerRequestDto));
+        ResponseStatusException responseStatusException = Assertions.assertThrows(ResponseStatusException.class, () -> mutantCheckService.validateRequest(dnaCheckerRequestDto));
         assertEquals("Invalid DNA", responseStatusException.getReason());
         assertEquals(HttpStatus.BAD_REQUEST, responseStatusException.getStatus());
+    }
+
+    @Test
+    void testSaveResult() {
+        mutantCheckService.saveResult(true, MutantCheckerTestHelper.getMutantDnaMatrixInVerticalPosition());
+        verify(checkResultRepository, times(1)).save(any());
     }
 }

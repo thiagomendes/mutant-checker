@@ -1,7 +1,7 @@
 package br.com.mutant.checker.controller;
 
 import br.com.mutant.checker.dto.DnaCheckerRequestDto;
-import br.com.mutant.checker.service.MutantCheckerService;
+import br.com.mutant.checker.service.MutantCheckService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -17,15 +17,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.Arrays;
 
 @Controller
-public class MutantCheckerController {
+public class MutantCheckController {
 
-    private final Logger logger = LoggerFactory.getLogger(MutantCheckerController.class);
+    private final Logger logger = LoggerFactory.getLogger(MutantCheckController.class);
 
-    private final MutantCheckerService mutantCheckerService;
+    private final MutantCheckService mutantCheckService;
 
     @Autowired
-    public MutantCheckerController(MutantCheckerService mutantCheckerService) {
-        this.mutantCheckerService = mutantCheckerService;
+    public MutantCheckController(MutantCheckService mutantCheckService) {
+        this.mutantCheckService = mutantCheckService;
     }
 
     @ApiOperation(value = "Based on DNA, checks if it is mutant")
@@ -35,10 +35,10 @@ public class MutantCheckerController {
     })
     @PostMapping("/mutant")
     public ResponseEntity<Void> isMutant(@RequestBody DnaCheckerRequestDto dnaCheckerRequestDto) {
-        mutantCheckerService.validateRequest(dnaCheckerRequestDto);
+        mutantCheckService.validateRequest(dnaCheckerRequestDto);
 
-        boolean result = mutantCheckerService.isMutant(dnaCheckerRequestDto.getDna());
-        mutantCheckerService.saveResult(result, dnaCheckerRequestDto.getDna());
+        boolean result = mutantCheckService.isMutant(dnaCheckerRequestDto.getDna());
+        mutantCheckService.saveResult(result, dnaCheckerRequestDto.getDna());
 
         String stringDna = Arrays.toString(dnaCheckerRequestDto.getDna());
 

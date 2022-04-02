@@ -21,6 +21,16 @@ public class CheckResult {
 
     private LocalDateTime createOn;
 
+    public CheckResult() {
+    }
+
+    public CheckResult(Long id, String dna, Kind kind, LocalDateTime createOn) {
+        this.id = id;
+        this.dna = dna;
+        this.kind = kind;
+        this.createOn = createOn;
+    }
+
     public Long getId() {
         return id;
     }

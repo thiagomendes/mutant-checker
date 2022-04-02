@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 @Service
-public class MutantCheckerServiceImpl implements MutantCheckerService {
+public class MutantCheckServiceImpl implements MutantCheckService {
 
-    private final Logger logger = LoggerFactory.getLogger(MutantCheckerServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(MutantCheckServiceImpl.class);
 
     private static final String VALIDATE_REQUEST_PATTERN = "[ATCG]+";
 
@@ -38,7 +38,7 @@ public class MutantCheckerServiceImpl implements MutantCheckerService {
     private final List<PositionMapper> positionMappers;
 
     @Autowired
-    public MutantCheckerServiceImpl(CheckResultRepository checkResultRepository, List<PositionMapper> positionMappers) {
+    public MutantCheckServiceImpl(CheckResultRepository checkResultRepository, List<PositionMapper> positionMappers) {
         this.checkResultRepository = checkResultRepository;
         this.positionMappers = positionMappers;
     }

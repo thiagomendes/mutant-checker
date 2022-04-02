@@ -28,6 +28,7 @@ public class MutantStatsServiceImpl implements MutantStatsService {
                 .stream()
                 .map(CheckResult::getKind)
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
         DnaCheckStatsResponseDto dnaCheckStatsResponseDto = new DnaCheckStatsResponseDto();
         dnaCheckStatsResponseDto.setCountHumanDna(collect.containsKey(Kind.HUMAN) ? collect.get(Kind.HUMAN) : 0);
         dnaCheckStatsResponseDto.setCountMutantDna(collect.containsKey(Kind.MUTANT) ? collect.get(Kind.MUTANT) : 0);
